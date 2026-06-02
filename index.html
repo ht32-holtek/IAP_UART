@@ -102,7 +102,30 @@ a:hover {
 <!-- Global site tag (gtag.js) - Google Analytics --> 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GBVTFSKWWB"></script> 
 <script>
-
+  document.getElementById('download-linkF1').addEventListener('click', function(event) {
+      gtag('event', 'file_download', {
+        'file_name': 'HT32_APPFW_1xxxx_IAP_UART_Vm.n.r_s.zip','link_url': this.href
+      });
+      console.log("Download event sent, opening GitHub in a new window...");
+  });
+  document.getElementById('download-linkF5').addEventListener('click', function(event) {
+      gtag('event', 'file_download', {
+        'file_name': 'HT32_APPFW_5xxxx_IAP_UART_Vm.n.r_s.zip','link_url': this.href
+      });
+      console.log("Download event sent, opening GitHub in a new window...");
+  });
+  document.getElementById('download-linkL5').addEventListener('click', function(event) {
+      gtag('event', 'file_download', {
+        'file_name': 'HT32_APPFW_L5xxxx_IAP_UART_Vm.n.r_s.zip','link_url': this.href
+      });
+      console.log("Download event sent, opening GitHub in a new window...");
+  });
+  document.getElementById('download-linkF49').addEventListener('click', function(event) {
+      gtag('event', 'file_download', {
+        'file_name': 'HT32_APPFW_49xxx_IAP_UART_Vm.n.r_s.zip','link_url': this.href
+      });
+      console.log("Download event sent, opening GitHub in a new window...");
+  });
   window.dataLayer = window.dataLayer || [];
   function gtag() {
     dataLayer.push(arguments);
