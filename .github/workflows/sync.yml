@@ -12,23 +12,24 @@ jobs:
   repo-sync:
     runs-on: ubuntu-latest
     steps:
-      # 1. 先同步代碼與 Tags
-      - name: Mirror the GitHub repos to Gitee
-        uses: Yikun/hub-mirror-action@master
+      # 1. 完整下載 GitHub 專案與所有 Git 紀錄、Tags
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          src: github/${{ github.repository_owner }}
-          dst: gitee/${{ secrets.GITEE_USER }}
-          dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
-          dst_token: ${{ secrets.GITEE_TOKEN }}
-          static_list: "${{ github.event.repository.name }}"
-          force_update: true
+          fetch-depth: 0 # 設為 0 才會下載完整歷史紀錄與所有 Tags
 
-      # 2. 同步 Release（移除了限制條件，手動執行時也一定會跑這一步！）
-      - name: Sync Release to Gitee
-        uses: trustedinster/sync-release-gitee@v1.3
-        with:
-          github_owner: ${{ github.repository_owner }}
-          github_repo: ${{ github.event.repository.name }}
-          gitee_owner: ${{ secrets.GITEE_USER }}
-          gitee_repo: ${{ github.event.repository.name }}
-          gitee_token: ${{ secrets.GITEE_TOKEN }}
+      # 2. 用原生 Git 指令直接將代碼與 Tags 強制推送到 Gitee
+      - name: Mirror Code and Tags to Gitee
+        env:
+          GITEE_USER: ${{ secrets.GITEE_USER }}
+          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
+          GITEE_REPO: ${{ github.event.repository.name }}
+        run: |
+          echo "🚀 開始同步代碼與 Tags 至 Gitee..."
+          # 組合包含 Token 的安全傳輸 URL
+          GITEE_REMOTE_URL="https://${GITEE_USER}:${GITEE_TOKEN}@gitee.com/${GITEE_USER}/${GITEE_REPO}.git"
+          
+          # 強制推送當前分支與所有 Tags
+          git push --force "$GITEE_REMOTE_URL" refs/remotes/origin/*:refs/heads/*
+          git push --tags --force "$GITEE_REMOTE_URL"
+          echo "✅ 代碼與 Tags 同步成功！"
